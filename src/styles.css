@@ -1,0 +1,190 @@
+/* 3D 滑板 —— LA 晴天街景 UI(照系列 styles.css 範式) */
+* { box-sizing: border-box; margin: 0; padding: 0; }
+/* ★hidden 屬性要壓過 .speed-panel 等的 display:flex(作者樣式會蓋掉 UA 的 [hidden];jonah 首跑抓到的雷) */
+[hidden] { display: none !important; }
+html, body { height: 100%; }
+body {
+  font-family: "Noto Sans TC", "Microsoft JhengHei", system-ui, sans-serif;
+  background: #12222e;
+  color: #eef2f8;
+  overflow: hidden;
+  -webkit-user-select: none;
+  user-select: none;
+}
+.app-shell { position: fixed; inset: 0; }
+#gameCanvas { position: absolute; inset: 0; width: 100%; height: 100%; display: block; touch-action: none; }
+
+/* 頂部:分數+時間+連招 */
+.topbar {
+  position: absolute; top: 10px; left: 50%; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 14px;
+  padding: 8px 22px; border-radius: 16px;
+  background: rgba(10, 20, 30, 0.78);
+  border: 1px solid rgba(255, 210, 63, 0.45);
+  z-index: 20;
+}
+.score-cap { font-size: 12px; opacity: 0.75; letter-spacing: 0.12em; }
+.score-label { font-size: 30px; font-weight: 800; color: #ffd23f; min-width: 64px; text-align: center; font-variant-numeric: tabular-nums; }
+.time-label { font-size: 20px; font-weight: 800; color: #eef6ff; font-variant-numeric: tabular-nums; }
+.time-label.urgent { color: #ff8d5a; animation: time-pulse 1s ease infinite; }
+@keyframes time-pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.55; } }
+.combo-label { font-size: 14px; font-weight: 800; color: #7fd48a; }
+
+/* 速度條(3d-figure-kit 鐵則:中下方、粗、由左到右亮起,投影可讀) */
+.speed-panel {
+  position: absolute; left: 50%; bottom: 108px; transform: translateX(-50%);
+  display: flex; align-items: center; gap: 12px;
+  padding: 12px 20px; border-radius: 18px;
+  background: rgba(10, 20, 30, 0.82);
+  border: 2px solid rgba(255, 210, 63, 0.55);
+  z-index: 22;
+}
+#speedLabel { font-size: 16px; font-weight: 800; color: #ffd97a; white-space: nowrap; }
+.speed-track { width: min(46vw, 340px); height: 20px; border-radius: 999px; background: rgba(255,255,255,0.14); overflow: hidden; }
+.speed-fill {
+  height: 100%; width: 100%; border-radius: 999px;
+  background: linear-gradient(90deg, #7db4ff, #7fd48a, #ffd23f);
+  transform: scaleX(0); transform-origin: left center;
+}
+.speed-fill[data-high="1"] { background: linear-gradient(90deg, #ffd23f, #ff9a3a, #ff5a3a); }
+
+/* 操作提示 */
+.controls-panel {
+  position: absolute; right: 14px; bottom: 96px; max-width: 340px;
+  padding: 10px 14px; border-radius: 14px;
+  background: rgba(10, 20, 30, 0.78);
+  border: 1px solid rgba(255, 210, 63, 0.3);
+  z-index: 20; font-size: 13px; line-height: 1.6;
+}
+
+/* 訊息帶 + 播報 */
+.message-ribbon {
+  position: absolute; bottom: 64px; left: 50%; transform: translateX(-50%);
+  max-width: min(90vw, 680px); padding: 6px 16px; border-radius: 999px;
+  background: rgba(10, 20, 30, 0.72); font-size: 14px; z-index: 20; text-align: center;
+}
+/* ★commentary-bar top=96(桌機)/88(手機):壓線批次正解值,新作從一開始就對 */
+.commentary-bar {
+  position: fixed; left: 50%; top: 96px; transform: translateX(-50%);
+  max-width: min(88vw, 680px); padding: 8px 18px; border-radius: 999px;
+  background: rgba(8, 16, 24, 0.88); border: 1px solid #ffd23f;
+  color: #f5f8ff; font-size: 17px; font-weight: 700; letter-spacing: 0.03em;
+  text-align: center; pointer-events: none; z-index: 40;
+  animation: commentary-pop 3.6s ease forwards;
+}
+.commentary-bar[data-tone="hot"] { border-color: #ff9a3a; color: #ffe9cf; }
+@keyframes commentary-pop {
+  0% { opacity: 0; transform: translateX(-50%) translateY(-8px) scale(0.94); }
+  7% { opacity: 1; transform: translateX(-50%) translateY(0) scale(1.02); }
+  13% { transform: translateX(-50%) scale(1); }
+  82% { opacity: 1; }
+  100% { opacity: 0; }
+}
+
+/* 招式大字(落地結算) */
+.trick-pop {
+  position: fixed; left: 50%; top: 30%; transform: translate(-50%, -50%);
+  font-size: clamp(30px, 6vw, 56px); font-weight: 900; letter-spacing: 0.05em;
+  color: #ffd23f; -webkit-text-stroke: 2px #7a4c00;
+  text-shadow: 0 6px 26px rgba(0,0,0,0.55);
+  pointer-events: none; z-index: 50; white-space: nowrap;
+  animation: trick-pop 1.7s ease forwards;
+}
+.trick-pop[data-clean="0"] { color: #cfd8e4; -webkit-text-stroke: 2px #333c48; }
+@keyframes trick-pop {
+  0% { opacity: 0; transform: translate(-50%, -50%) scale(0.5) rotate(-4deg); }
+  15% { opacity: 1; transform: translate(-50%, -50%) scale(1.12) rotate(1deg); }
+  26% { transform: translate(-50%, -50%) scale(1); }
+  78% { opacity: 1; }
+  100% { opacity: 0; transform: translate(-50%, -56%) scale(1.03); }
+}
+
+/* 觸控按鈕 */
+.touch-controls { position: absolute; right: 18px; bottom: 14px; display: flex; gap: 12px; z-index: 25; }
+.touch-action {
+  min-width: 116px; padding: 14px 20px; border-radius: 999px; border: 2px solid #ffd23f;
+  background: rgba(255, 210, 63, 0.16); color: #ffe9a8; font-size: 18px; font-weight: 800;
+  cursor: pointer; touch-action: none;
+}
+.touch-action.alt { border-color: #7db4ff; color: #d7e4ff; background: rgba(125, 180, 255, 0.14); min-width: 72px; font-size: 20px; }
+.touch-action:active { transform: scale(0.96); }
+
+.hud-buttons { position: absolute; left: 14px; bottom: 14px; display: flex; gap: 8px; z-index: 25; }
+.hud-buttons button {
+  padding: 8px 14px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.25);
+  background: rgba(10, 20, 30, 0.7); color: #eef2f8; font-size: 13px; cursor: pointer;
+}
+
+/* 結算 overlay */
+.overlay-shell {
+  position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+  background: rgba(8, 14, 22, 0.74); z-index: 60;
+}
+.overlay-shell.visible { display: flex; }
+.overlay-card {
+  width: min(90vw, 500px); padding: 28px 26px; border-radius: 20px; text-align: center;
+  background: #14222e; border: 2px solid #ffd23f;
+}
+.overlay-eyebrow { font-size: 13px; letter-spacing: 0.08em; opacity: 0.8; color: #ffd97a; }
+.overlay-card h2 { font-size: 28px; margin: 10px 0; color: #ffd23f; }
+.overlay-card p { font-size: 15px; line-height: 1.8; opacity: 0.92; }
+.overlay-actions { display: flex; gap: 12px; justify-content: center; margin-top: 20px; }
+.overlay-actions button {
+  padding: 10px 22px; border-radius: 12px; border: none; font-size: 15px; font-weight: 700; cursor: pointer;
+}
+#overlayReplayButton { background: #ffd23f; color: #4a3200; }
+#overlayMenuButton { background: rgba(255, 255, 255, 0.14); color: #eef2f8; }
+
+/* 主選單 */
+.home-screen {
+  position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+  background: radial-gradient(circle at 50% 18%, #2a5a7a 0%, #12222e 72%);
+  z-index: 70; overflow: auto;
+}
+.home-screen.visible { display: flex; }
+.home-card { width: min(92vw, 600px); padding: 30px 28px; text-align: center; }
+.home-eyebrow { font-size: 12px; letter-spacing: 0.24em; color: #ffd23f; opacity: 0.85; }
+.home-card h1 { font-size: 44px; margin: 8px 0 4px; letter-spacing: 0.05em; }
+.home-sub { font-size: 15px; opacity: 0.82; margin-bottom: 22px; line-height: 1.7; }
+.home-row { display: flex; gap: 10px; align-items: center; justify-content: center; margin-bottom: 16px; flex-wrap: wrap; }
+.home-row label { font-size: 14px; opacity: 0.8; }
+/* ★鐵則:select 深底亮字+color-scheme:dark(Windows 系統展開選單白底防隱形) */
+.home-row select {
+  padding: 8px 12px; border-radius: 10px; border: 1px solid rgba(255, 255, 255, 0.25);
+  background: #14222e; color: #eef2f8; font-size: 14px; color-scheme: dark;
+}
+select { color-scheme: dark; }
+select option { background: #14222e; color: #eef2f8; }
+.home-hint { font-size: 13px; opacity: 0.75; line-height: 1.8; margin-bottom: 20px; }
+.home-hint strong { color: #ffd97a; }
+.start-button {
+  padding: 14px 52px; border-radius: 999px; border: none; font-size: 20px; font-weight: 800;
+  background: #ffd23f; color: #4a3200; cursor: pointer;
+}
+.start-button:active { transform: scale(0.97); }
+
+/* 直向轉橫提示 */
+.rotate-hint {
+  position: fixed; inset: 0; display: none; align-items: center; justify-content: center;
+  background: rgba(8, 14, 22, 0.9); z-index: 90; pointer-events: none;
+}
+.rotate-card {
+  text-align: center; padding: 26px 30px; border-radius: 20px;
+  background: #14222e; border: 2px solid #ffd23f; max-width: 78vw;
+}
+.rotate-icon { font-size: 44px; margin-bottom: 10px; }
+.rotate-card p { font-size: 16px; line-height: 1.7; }
+.rotate-card strong { color: #ffd97a; }
+@media (orientation: portrait) and (max-width: 720px) {
+  .rotate-hint { display: flex; }
+}
+
+@media (max-width: 720px) {
+  .controls-panel { display: none; }
+  .commentary-bar { top: 88px; font-size: 14px; }
+  .score-label { font-size: 24px; }
+  .speed-panel { bottom: 128px; padding: 10px 14px; }
+  .speed-track { width: 42vw; height: 16px; }
+  .touch-action { min-width: 96px; padding: 12px 14px; font-size: 16px; }
+  .touch-action.alt { min-width: 60px; font-size: 18px; }
+}

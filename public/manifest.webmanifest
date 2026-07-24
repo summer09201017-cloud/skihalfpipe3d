@@ -1,0 +1,24 @@
+{
+  "name": "3D 滑雪 U 型場地 Ski Halfpipe 3D",
+  "short_name": "3D滑雪半管",
+  "description": "冬奧單板滑雪 U 型場地(半管)計分賽——泵出速度、衝出管緣騰空、空中轉體抓板、穩穩落地;連續動作分數起飛!可離線 PWA。",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0e2438",
+  "theme_color": "#bcd6ea",
+  "orientation": "landscape",
+  "icons": [
+    {
+      "src": "/icon.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "any"
+    },
+    {
+      "src": "/icon-maskable.svg",
+      "sizes": "any",
+      "type": "image/svg+xml",
+      "purpose": "maskable"
+    }
+  ]
+}

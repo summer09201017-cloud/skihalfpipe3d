@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="zh-Hant">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+    <meta name="theme-color" content="#bcd6ea" />
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Ctext y='.9em' font-size='90'%3E%F0%9F%8F%82%3C/text%3E%3C/svg%3E" />
+    <link rel="manifest" href="/manifest.webmanifest" />
+    <title>3D 滑雪 U 型場地 Ski Halfpipe 3D</title>
+  </head>
+  <body>
+    <main class="app-shell">
+      <canvas id="gameCanvas" aria-label="3D 滑雪 U 型場地遊戲畫面"></canvas>
+
+      <!-- 頂部:分數 + 時間 + 連招 -->
+      <header class="topbar">
+        <span class="score-cap">分數</span>
+        <span id="scoreLabel" class="score-label">0</span>
+        <span id="timeLabel" class="time-label">60s</span>
+        <span id="comboLabel" class="combo-label"></span>
+      </header>
+
+      <!-- 速度條(中下方大力道條) -->
+      <div class="speed-panel" id="speedPanel" hidden>
+        <span id="speedLabel">速度</span>
+        <div class="speed-track"><div class="speed-fill" id="speedFill"></div></div>
+      </div>
+
+      <div class="message-ribbon" id="statusMessage">選擇難度後開始。</div>
+      <div class="commentary-bar" id="commentaryBar" hidden></div>
+      <div class="trick-pop" id="trickPop" hidden></div>
+
+      <!-- 操作提示 -->
+      <div class="controls-panel" id="controlsPanel" hidden>
+        <div id="controlsHint">空白鍵按住=泵(下坡加速)/抓板(空中) ・ A/D 或 ←/→=移動(地面)/轉體(空中) ・ V 視角</div>
+      </div>
+
+      <!-- 觸控(按住式) -->
+      <div class="touch-controls" id="touchControls">
+        <button id="touchLeft" class="touch-action alt">◀</button>
+        <button id="touchRight" class="touch-action alt">▶</button>
+        <button id="touchPump" class="touch-action">泵/抓板</button>
+      </div>
+
+      <div class="hud-buttons">
+        <button id="menuButton">選單</button>
+        <button id="audioButton">音效開啟</button>
+        <button id="cameraButton">視角</button>
+        <button id="fullscreenButton" title="全螢幕">⛶ 全螢幕</button>
+      </div>
+
+      <!-- 直向轉橫提示 -->
+      <div class="rotate-hint" id="rotateHint">
+        <div class="rotate-card">
+          <div class="rotate-icon">📱↻</div>
+          <p>請把裝置轉成<strong>橫向</strong>再玩,U 型場地才裝得下!</p>
+        </div>
+      </div>
+
+      <!-- 結算 -->
+      <div class="overlay-shell" id="matchOverlay">
+        <div class="overlay-card">
+          <p class="overlay-eyebrow" id="overlayEyebrow">—</p>
+          <h2 id="overlayTitle">—</h2>
+          <p id="overlayText">—</p>
+          <div class="overlay-actions">
+            <button id="overlayMenuButton">回選單</button>
+            <button id="overlayReplayButton">再滑一輪</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- 主選單 -->
+      <div class="home-screen visible" id="homeScreen">
+        <div class="home-card">
+          <p class="home-eyebrow">SKI HALFPIPE・冬奧 U 型場地計分賽</p>
+          <h1>3D 滑雪 U 型場地</h1>
+          <p class="home-sub">泵出速度、衝出管緣騰空、空中轉體抓板、穩穩落地——連續動作分數起飛!</p>
+
+          <div class="home-row">
+            <label for="difficultySelect">難度</label>
+            <select id="difficultySelect">
+              <option value="kids">幼兒（超簡單）</option>
+              <option value="child">兒童（簡單）</option>
+              <option value="easy" selected>入門</option>
+              <option value="normal">標準</option>
+              <option value="hard">職業</option>
+            </select>
+            <label for="audioSelect">音效</label>
+            <select id="audioSelect">
+              <option value="on" selected>開啟</option>
+              <option value="off">靜音</option>
+            </select>
+          </div>
+
+          <p class="home-hint" id="modeHint">下坡時<strong>按住空白鍵「泵」</strong>越泵越快;衝出管緣就會飛起來——空中 ←/→ 轉體、按住空白鍵抓板;轉滿整半圈落地=穩!連續穩落地有連招加成。摔不傷、永遠能完賽,放心滑!</p>
+          <button class="start-button" id="startButton">開始</button>
+        </div>
+      </div>
+    </main>
+    <script type="module" src="/src/main.js"></script>
+    <script>
+    try {
+      if (!['localhost', '127.0.0.1'].includes(location.hostname)) {
+        navigator.sendBeacon?.('https://hfpc-play-stats.summer09201017.workers.dev/api/ping?g=skihalfpipe3d');
+      }
+    } catch (_) {}
+    </script>
+  </body>
+</html>

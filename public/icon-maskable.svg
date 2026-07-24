@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 128 128">
+  <rect width="128" height="128" fill="#7fa8c8"/>
+  <!-- 內容集中在安全區(中央 ~64%),四周留白給 maskable 裁切 -->
+  <path d="M30 62 Q30 88 54 88 H74 Q98 88 98 62 V96 H30 Z" fill="#eaf1f7"/>
+  <path d="M30 62 Q30 88 54 88 H74 Q98 88 98 62" fill="none" stroke="#9fc0d8" stroke-width="4" stroke-linecap="round"/>
+  <g transform="translate(64 52) rotate(-18)">
+    <rect x="-20" y="-3.5" width="40" height="7" rx="3.5" fill="#18a0c8"/>
+    <rect x="-20" y="-4" width="40" height="2.6" rx="1.3" fill="#dfe9f0"/>
+  </g>
+  <circle cx="40" cy="40" r="2.6" fill="#ffffff"/>
+  <circle cx="88" cy="44" r="2.6" fill="#ffffff"/>
+</svg>
